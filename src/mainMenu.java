@@ -5,9 +5,9 @@
  * 
  * For Description of the game, go to the README.txt for more info
  * 
- * Update Date: 19 March 2020
+ * Update Date: 3 April 2020
  * 
- * Version: 0.80
+ * Version: 1.00
  * 
  */
 
@@ -30,9 +30,9 @@ public class mainMenu implements ActionListener, KeyListener {
 	private JFrame menu = new JFrame();
 
 	public mainMenu() {
-		menu.getContentPane().setLayout(new BorderLayout(0, 20));
+		JPanel button = new JPanel();
+		menu.setLayout(new BorderLayout(0, 20));
 
-		JPanel panel = new JPanel();
 		JLabel title = new JLabel("TicTacToe", JLabel.CENTER);
 		Font f = new Font(Font.SERIF, Font.BOLD, 28);
 		title.setFont(f);
@@ -42,37 +42,43 @@ public class mainMenu implements ActionListener, KeyListener {
 		Image change = image.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
 		grap = new ImageIcon(change);
 		JLabel img = new JLabel(grap);
+		JLabel text = new JLabel("Press S to start or Press Q to quit");
+		text.setFont(new Font(Font.SERIF, Font.BOLD, 18));
+		JPanel hold = new JPanel();
+		hold.add(img);
+		hold.add(text);
 
-		JButton begin = new JButton("Click here or Press S to start");
-		begin.setFocusable(false);
-		begin.setBorder(null);
-		begin.setPreferredSize(new Dimension(171, 75));
+		JButton begin = new JButton("Start");
+		JButton quit = new JButton("Quit");
 		f = new Font(Font.SERIF, Font.BOLD, 18);
-		begin.setFont(new Font("Serif", Font.BOLD, 30));
+		begin.setFont(f);
+		begin.setPreferredSize(new Dimension(140, 40));
 		begin.addActionListener(this);
 		begin.addKeyListener(this);
-
-		JButton quit = new JButton("Click here or Press Q to quit");
-		quit.setBorder(null);
-		f = new Font(Font.SERIF, Font.BOLD, 18);
 		quit.setFont(f);
+		quit.setPreferredSize(new Dimension(140, 40));
 		quit.addActionListener(this);
 		quit.addKeyListener(this);
 		quit.setActionCommand("quit");
+		begin.setActionCommand("begin");
 
-		JButton restart = new JButton("Restart");
-		f = new Font(Font.SERIF, Font.BOLD, 18);
-		restart.setFont(f);
-		restart.addActionListener(this);
-		restart.addKeyListener(this);
-		restart.setActionCommand("restart");
+		begin.setBackground(Color.red);
+		begin.setForeground(Color.white);
+		quit.setBackground(Color.red);
+		quit.setForeground(Color.white);
 
-		menu.getContentPane().add(title, BorderLayout.NORTH);
-		menu.getContentPane().add(img, BorderLayout.CENTER);
-		menu.getContentPane().add(begin, BorderLayout.SOUTH);
-		menu.getContentPane().add(quit, BorderLayout.NORTH);
+		begin.setBorder(null);
+		quit.setBorder(null);
+
+		button.add(begin);
+		button.add(quit);
+
+		menu.add(title, BorderLayout.NORTH);
+		menu.add(hold, BorderLayout.CENTER);
+		menu.add(button, BorderLayout.SOUTH);
 		menu.setVisible(true);
-		menu.setSize(525, 500);
+		menu.setSize(500, 500);
+		menu.setTitle("Main Menu");
 		menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -83,37 +89,36 @@ public class mainMenu implements ActionListener, KeyListener {
 	// Tracks the click on the UI button
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if ("quit".equals(e.getActionCommand())) {
-			System.exit(0);
-		} else {
+		String input = e.getActionCommand();
+		if (input.equals("begin")) {
 			menu.setVisible(false);
 			game tic = new game();
+		} else if (input.equals("quit")) {
+			System.exit(0);
 		}
 	}
 
-	// Tracks the keypress (the S and Q button on the keyboard)
 	@Override
-	public void keyPressed(KeyEvent arg0) {
+	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		char ch = arg0.getKeyChar();
+		char ch = e.getKeyChar();
 		if (ch == 's') {
 			menu.setVisible(false);
 			game tic = new game();
-		} else if (ch == 'q')
+		} else if (ch == 'q') {
 			System.exit(0);
+		}
 	}
 
-	// Not important, only there for the implement to run
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
+	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
 	}
-
 }

@@ -5,9 +5,9 @@
  * 
  * For Description of the game, go to the README.txt for more info
  * 
- * Update Date: 19 March 2020
+ * Update Date: 3 April 2020
  * 
- * Version: 0.80
+ * Version: 1.00
  * 
  * Start this program at mainMenu.java instead of this
  * 
@@ -22,86 +22,72 @@
  */
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.event.KeyAdapter;
 
 public class game extends JPanel {
 	private static JFrame frame = new JFrame("Tic Tac Toe");
 	private JButton buttons[] = new JButton[9];
-	public JLabel turn, player1WinsLabel, player2WinsLabel, tieLabel, gamesLabel;
-	public int turns = 0, menu = 0, player1Win = 0, player2Win = 0, ties = 0, games = 0;
+	public JLabel turn, grapTurn, player1WinsLabel, player2WinsLabel, tieLabel, gamesLabel;
+	public int turns = 0, player1Win = 0, player2Win = 0, ties = 0, games = 0;
 	public String win = "";
-	private JTextArea pressRToRestart;
 
 	public game() {
 		// this is where the game begins (from being called in main menu)
-
 		JPanel winPanel = new JPanel();
+		JPanel middle = new JPanel();
+		JPanel instructions = new JPanel();
 		Font f = new Font(Font.SERIF, Font.BOLD, 14);
-		frame.getContentPane().setLayout(new GridLayout(4, 3, 5, 5));
+		frame.setLayout(new GridLayout(4, 3, 5, 5));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(525, 500);
 		frame.setVisible(true);
 
 		JLabel stats = new JLabel("Stats", JLabel.CENTER);
+
+		ImageIcon grap = new ImageIcon("x.png");
+		Image image = grap.getImage();
+		Image change = image.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+		grap = new ImageIcon(change);
+		grapTurn = new JLabel(grap);
 		turn = new JLabel("X's turn", JLabel.CENTER);
-		turn.setForeground(Color.RED);
 		player1WinsLabel = new JLabel("X wins = 0", JLabel.CENTER);
 		player1WinsLabel.setForeground(Color.RED);
 		player2WinsLabel = new JLabel("O wins = 0", JLabel.CENTER);
 		player2WinsLabel.setForeground(Color.BLUE);
 		tieLabel = new JLabel("Number of Ties = 0", JLabel.CENTER);
 		gamesLabel = new JLabel("Number of games = 0", JLabel.CENTER);
+		JLabel restart = new JLabel("Press R to Restart", JLabel.CENTER);
+		JLabel quit = new JLabel("Press Q to Quit", JLabel.CENTER);
+		JLabel keyBinding = new JLabel("Key Bindings", JLabel.CENTER);
 
 		stats.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 25));
+		turn.setForeground(Color.RED);
 		turn.setFont(new Font("Serif", Font.BOLD, 30));
 		player1WinsLabel.setFont(f);
 		player2WinsLabel.setFont(f);
 		tieLabel.setFont(f);
 		gamesLabel.setFont(f);
+		restart.setFont(new Font("Serif", Font.BOLD, 15));
+		quit.setFont(new Font("Serif", Font.BOLD, 15));
+		keyBinding.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 25));
 
+		instructions.add(keyBinding);
+		instructions.add(restart);
+		instructions.add(quit);
 		winPanel.add(stats);
 		winPanel.add(player1WinsLabel);
 		winPanel.add(player2WinsLabel);
 		winPanel.add(tieLabel);
 		winPanel.add(gamesLabel);
 		winPanel.setLayout(new GridLayout(5, 1));
+		middle.setLayout(new GridLayout(2, 1));
+		middle.add(grapTurn);
+		middle.add(turn);
 
-		pressRToRestart = new JTextArea();
-		pressRToRestart.setForeground(Color.BLACK);
-		pressRToRestart.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				char ch = e.getKeyChar();
-				if (ch == 'r') {
-					restart();
-				} else if (ch == 'q')
-					System.exit(0);
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-		});
-		pressRToRestart.setBackground(SystemColor.menu);
-		pressRToRestart.setDisabledTextColor(Color.BLACK);
-		pressRToRestart.setTabSize(15);
-		pressRToRestart.setText("\r\nPress R to Restart\r\n\r\nPress Q to Quit");
-		pressRToRestart.setRows(2);
-		pressRToRestart.setFont(new Font("Serif", Font.BOLD, 15));
-		pressRToRestart.setEditable(false);
-		frame.getContentPane().add(pressRToRestart);
-		frame.getContentPane().add(turn);
-		frame.getContentPane().add(winPanel);
+		frame.add(instructions);
+		frame.add(middle);
+		frame.add(winPanel);
 		start();
 	}
 
@@ -116,8 +102,19 @@ public class game extends JPanel {
 			buttons[i].setFont(f);
 			buttons[i].setActionCommand(Integer.toString(i));
 			buttons[i].addActionListener(new buttonListener());
-			frame.getContentPane().add(buttons[i]);
-
+			buttons[i].addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					char ch = e.getKeyChar();
+					if (ch == 'r') {
+						turns = 0;
+						restart();
+					} else if (ch == 'q') {
+						System.exit(0);
+					}
+				}
+			});
+			frame.add(buttons[i]);
 		}
 	}
 
@@ -126,16 +123,15 @@ public class game extends JPanel {
 		for (int i = 0; i <= 8; i++) {
 			buttons[i].setText("");
 			buttons[i].setBorder(BorderFactory.createLineBorder(Color.black, 3));
-			turns = 0;
-			
 		}
-		
-		if (("O's turn").equals("O's turn")) {
-			turn.setForeground(Color.RED);
-			turn.setFont(new Font("Serif", Font.BOLD, 30));
-			turn.setText("X's turn");
-		}
-
+		turn.setForeground(Color.RED);
+		turn.setFont(new Font("Serif", Font.BOLD, 30));
+		turn.setText("X's turn");
+		ImageIcon grap = new ImageIcon("x.png");
+		Image image = grap.getImage();
+		Image change = image.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+		grap = new ImageIcon(change);
+		grapTurn.setIcon(grap);
 	}
 
 	public class buttonListener implements ActionListener {
@@ -145,24 +141,6 @@ public class game extends JPanel {
 			int input = 0;
 			JButton begin = (JButton) e.getSource();
 
-			begin.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyPressed(KeyEvent e) {
-					char ch = e.getKeyChar();
-					if (ch == 'r') {
-						restart();
-					} else if (ch == 'q')
-						System.exit(0);
-				}
-
-				@Override
-				public void keyReleased(KeyEvent e) {
-				}
-
-				@Override
-				public void keyTyped(KeyEvent e) {
-				}
-			});
 			if (buttons[Integer.parseInt(e.getActionCommand())].getText().equals("X")
 					|| buttons[Integer.parseInt(e.getActionCommand())].getText().equals("O")) {
 				JOptionPane.showConfirmDialog(null, "You cannot place on this tile!", "Oops!",
@@ -172,29 +150,58 @@ public class game extends JPanel {
 					begin.setBorder(BorderFactory.createLineBorder(Color.red, 3));
 					begin.setForeground(Color.red);
 					begin.setText("X");
+					ImageIcon grap = new ImageIcon("O.png");
+					Image image = grap.getImage();
+					Image change = image.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+					grap = new ImageIcon(change);
+					grapTurn.setIcon(grap);
 					turn.setForeground(Color.BLUE);
 					turn.setFont(new Font("Serif", Font.BOLD, 30));
 					turn.setText("O's turn");
-
 				} else {
 					begin.setBorder(BorderFactory.createLineBorder(Color.blue, 3));
 					begin.setForeground(Color.blue);
 					begin.setText("O");
+					ImageIcon grap = new ImageIcon("X.png");
+					Image image = grap.getImage();
+					Image change = image.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+					grap = new ImageIcon(change);
+					grapTurn.setIcon(grap);
 					turn.setForeground(Color.RED);
 					turn.setFont(new Font("Serif", Font.BOLD, 30));
 					turn.setText("X's turn");
-
 				}
 				if (win() == true) {
+					Font f = new Font(Font.SERIF, Font.BOLD, 24);
+					JFrame winScreen = new JFrame();
+					winScreen.setLayout(new GridLayout(0, 1));
+					winScreen.setSize(300, 400);
 					if (win.equals("X")) {
+						ImageIcon grap = new ImageIcon("xWin.png");
+						Image image = grap.getImage();
+						Image change = image.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+						grap = new ImageIcon(change);
+						JLabel display = new JLabel(grap);
+						JLabel text = new JLabel("X Wins", JLabel.CENTER);
+						text.setFont(f);
+						winScreen.add(display);
+						winScreen.add(text);
+						winScreen.setVisible(true);
 						input = JOptionPane.showConfirmDialog(null, "X wins!\n\nDo you want to play again?", "Winner!",
 								JOptionPane.YES_NO_OPTION);
-						turn.setForeground(Color.RED);
-						turn.setFont(new Font("Serif", Font.BOLD, 30));
-						turn.setText("X's turn");
 						player1Win++;
 						player1WinsLabel.setText("X wins = " + player1Win);
 					} else if (win.equals("O")) {
+						ImageIcon grap = new ImageIcon("oWin.png");
+						Image image = grap.getImage();
+						Image change = image.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+						grap = new ImageIcon(change);
+						JLabel display = new JLabel(grap);
+						JLabel text = new JLabel("O Wins", JLabel.CENTER);
+						text.setFont(f);
+						winScreen.add(display);
+						winScreen.add(text);
+						winScreen.setVisible(true);
 						input = JOptionPane.showConfirmDialog(null, "O wins!\n\nDo you want to play again?", "Winner!",
 								JOptionPane.YES_NO_OPTION);
 						player2Win++;
@@ -202,29 +209,25 @@ public class game extends JPanel {
 					} else {
 						input = JOptionPane.showConfirmDialog(null, "Cat's game (Tie)\n\nDo you want to play again?",
 								"Cat's game (Tie)", JOptionPane.YES_NO_OPTION);
-						turn.setForeground(Color.RED);
-						turn.setFont(new Font("Serif", Font.BOLD, 30));
-						turn.setText("X's turn");
 						ties++;
 						tieLabel.setText("Number of Ties = " + ties);
 					}
 					switch (input) {
 					case 0:
+						winScreen.setVisible(false);
 						games++;
 						gamesLabel.setText("Number of games = " + games);
+						turns = 1;
 						restart();
-						turns = -1;
 						break;
 					case 1:
 						System.exit(0);
 					}
-				
 				}
 				turns++;
 			}
-		
 		}
-		
+
 	}
 
 	public boolean win() {
@@ -251,10 +254,8 @@ public class game extends JPanel {
 			} else if (checkEmpty()) {
 				return true;
 			}
-			
 		}
 		return result;
-		
 	}
 
 	public boolean check(int x, int y) {
